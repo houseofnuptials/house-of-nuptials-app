@@ -57,10 +57,8 @@ export default function Onboarding() {
       if (signUpError) throw signUpError;
 
       const userId = data.user.id;
-      await Promise.all([
-        createDefaultTasks(userId),
-        createDefaultBudgetCategories(userId, form.budgetTotal),
-      ]);
+      try { await createDefaultTasks(userId); } catch(e) {}
+try { await createDefaultBudgetCategories(userId, form.budgetTotal); } catch(e) {}
 
       navigate('/dashboard');
     } catch (err) {
