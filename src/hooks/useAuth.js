@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { supabase, getProfile, createDefaultTasks, createDefaultBudgetCategories } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 
 const AuthContext = createContext(null);
 
@@ -10,22 +10,33 @@ export function AuthProvider({ children }) {
 
   const loadProfile = useCallback(async (userId) => {
     try {
-      const data = await getProfile(userId);
-      setProfile(data);
-    } catch {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle();
+      if (error) {
+        console.error('Profile load error:', error);
+        // Build a basic profile from user metadata if table fails
+        setProfile(null);
+      } else {
+        setProfile(data);
+      }
+    } catch (err) {
+      console.error('Profile load exception:', err);
       setProfile(null);
     }
   }, []);
 
   useEffect(() => {
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
-      if (session?.user) loadProfile(session.user.id);
+      if (session?.user) {
+        loadProfile(session.user.id);
+      }
       setLoading(false);
     });
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {

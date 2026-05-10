@@ -124,7 +124,7 @@ export default function Dashboard({ showToast }) {
     }
   }
 
-  const weddingDate = profile?.wedding_date ? parseISO(profile.wedding_date) : null;
+  const weddingDate = (profile?.wedding_date || user?.user_metadata?.wedding_date) ? parseISO(profile?.wedding_date || user?.user_metadata?.wedding_date) : null;
   const daysLeft = weddingDate ? Math.max(0, differenceInDays(weddingDate, new Date())) : null;
   const totalDays = 548;
 
@@ -145,6 +145,7 @@ export default function Dashboard({ showToast }) {
 
   const firstName = profile?.first_name || user?.user_metadata?.first_name || 'Bride';
   const isPremium = profile?.is_premium || false;
+  const weddingDateStr = profile?.wedding_date || user?.user_metadata?.wedding_date || null;
 
   function getPhaseLabel() {
     if (!daysLeft) return '';
