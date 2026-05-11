@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { differenceInDays, format, parseISO } from 'date-fns';
-import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
 
 function CountdownRing({ days, totalDays }) {
@@ -81,8 +80,8 @@ function TaskPhase({ phase, tasks, onToggle }) {
   );
 }
 
-export default function Dashboard({ showToast }) {
-  const { user, profile } = useAuth();
+export default function Dashboard({ showToast, user, profile }) {
+  // auth via props
   const [tasks, setTasks] = useState([]);
   const [loadingTasks, setLoadingTasks] = useState(true);
 
