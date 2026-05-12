@@ -68,7 +68,8 @@ function AppLayout() {
       if(!session){navigate('/login');return;}
       setUser(session.user);
       supabase.from('profiles').select('*').eq('id',session.user.id).maybeSingle()
-        .then(({data})=>{setProfile(data);setReady(true);});
+.then(({data})=>{setProfile(data);setReady(true);})
+.catch(()=>{setReady(true);});
     });
   },[navigate]);
 
